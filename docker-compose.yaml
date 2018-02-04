@@ -1,0 +1,72 @@
+version: '3'
+
+services:
+    nginx:
+        image: nginx
+        volumes:
+            - "./nginx.conf:/etc/nginx/conf.d/default.conf"
+            - "./.htpasswd:/etc/nginx/conf.d/.htpasswd"
+        ports:
+            - 80:80
+            - 8889:8889
+            - 8887:8887
+        environment:
+            - NGINX_HOST=localhost
+        restart: always
+        command: /bin/bash -c "nginx -g 'daemon off;'"
+        networks:
+          - influxdb
+    influxdb:
+        image: influxdb
+        volumes:
+          - ./data/influxdb:/var/lib/influxdb
+        networks:
+          - influxdb
+    kapacitor:
+        image: kapacitor
+        depends_on: [influxdb]
+        environment:
+          KAPACITOR_HOSTNAME: kapacitor
+          KAPACITOR_INFLUXDB_0_URLS_0: http://influxdb:8086
+        volumes:
+          - ./data/kapcitor:/var/lib/kapacitor
+        networks:
+          - influxdb
+        ports:
+          - 9092:9092
+    chronograf:
+        image: chronograf
+        depends_on: [influxdb,kapacitor]
+        volumes:
+          - ./data/chronograf:/var/lib/chronograf
+        ports:
+          - "8888:8888"
+        networks:
+          - influxdb
+        command:
+          - chronograf
+          - --influxdb-url=http://influxdb:8086
+    telegraf:
+      image: telegraf
+      hostname: telegraf
+      restart: always
+      volumes:
+        - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+        - /sys:/rootfs/sys:ro
+        - /proc:/rootfs/proc:ro
+        - /etc:/rootfs/etc:ro
+      depends_on: [influxdb]
+      environment:
+        HOST_PROC: /rootfs/proc
+        HOST_SYS: /rootfs/sys
+        HOST_ETC: /rootfs/etc
+      networks:
+          - influxdb
+      ports:
+        - "8092:8092/udp"
+        - "8094:8094"
+        - "8125:8125/udp"
+
+networks:
+    influxdb:
