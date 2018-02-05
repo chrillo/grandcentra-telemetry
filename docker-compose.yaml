@@ -7,8 +7,12 @@ services:
         volumes:
             - "./nginx.conf:/etc/nginx/conf.d/default.conf"
             - "./.htpasswd:/etc/nginx/conf.d/.htpasswd"
+            - "./data/letsencrypt/certs:/etc/letsencrypt"
+            - "./data/letsencrypt/certs-data:/data/letsencrypt"
         ports:
             - 80:80
+            - 8080:8080
+            - 443:443
         environment:
             - NGINX_HOST=localhost
         restart: always
