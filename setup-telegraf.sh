@@ -96,7 +96,7 @@ FILE="/etc/telegraf/telegraf.conf"
   ## Multiple urls can be specified as part of the same cluster,
   ## this means that only ONE of the urls will be written to each interval.
   # urls = ["udp://127.0.0.1:8089"] # UDP endpoint example
-  urls = ["https://telemetry:chripet@influxdb:8086"] # required
+  urls = ["$0"] # required
   ## The target database for metrics (telegraf will create it if not exists).
   database = "telegraf" # required
 
