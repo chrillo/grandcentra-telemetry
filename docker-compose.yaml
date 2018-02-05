@@ -18,6 +18,7 @@ services:
           - influxdb
     influxdb:
         image: influxdb
+        restart: always
         volumes:
           - ./data/influxdb:/var/lib/influxdb
         networks:
@@ -25,6 +26,7 @@ services:
     kapacitor:
         image: kapacitor
         depends_on: [influxdb]
+        restart: always
         environment:
           KAPACITOR_HOSTNAME: kapacitor
           KAPACITOR_INFLUXDB_0_URLS_0: http://influxdb:8086
@@ -32,15 +34,12 @@ services:
           - ./data/kapcitor:/var/lib/kapacitor
         networks:
           - influxdb
-        ports:
-          - 9092:9092
     chronograf:
         image: chronograf
         depends_on: [influxdb,kapacitor]
+        restart: always
         volumes:
           - ./data/chronograf:/var/lib/chronograf
-        ports:
-          - "8888:8888"
         networks:
           - influxdb
         command:
@@ -49,6 +48,7 @@ services:
     telegraf:
       image: telegraf
       hostname: telegraf
+      depends_on: [influxdb]
       restart: always
       volumes:
         - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
@@ -63,10 +63,6 @@ services:
         HOST_ETC: /rootfs/etc
       networks:
           - influxdb
-      ports:
-        - "8092:8092/udp"
-        - "8094:8094"
-        - "8125:8125/udp"
 
 networks:
     influxdb:
