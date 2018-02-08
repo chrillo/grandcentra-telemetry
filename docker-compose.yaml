@@ -27,8 +27,8 @@ services:
         container_name: letsencrypt-nginx-proxy-companion
         restart: always
         volumes:
-          - "./nginx.conf:/etc/nginx/conf.d/default.conf"
           - "/var/run/docker.sock:/var/run/docker.sock:ro"
+          - "./nginx.conf:/etc/nginx/conf.d/default.conf"
           - "./data/vhost:/etc/nginx/vhost.d"
           - "./data/html:/usr/share/nginx/html"
           - "./data/letsencrypt/certs:/etc/nginx/certs:rw" 
