@@ -34,6 +34,7 @@ services:
           - "./data/letsencrypt/certs:/etc/nginx/certs:rw" 
         environment:
           NGINX_PROXY_CONTAINER: nginx
+          ACME_CA_URI: https://acme-staging.api.letsencrypt.org/directory
         networks:
           - influxdb
     influxdb:
