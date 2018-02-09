@@ -48,6 +48,10 @@ git clone https://github.com/chrillo/grandcentral-telemetry.git
 sudo sh -c "echo -n '${USER}:' >> /etc/nginx/.htpasswd"
 sudo sh -c "openssl passwd -apr1 >> /etc/nginx/.htpasswd"
 
+cd grandcentral-telemetry
+
+docker-compose up
+
 ```
 
 # setup a telegraf client
