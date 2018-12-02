@@ -37,14 +37,14 @@ services:
         networks:
           - influxdb
     influxdb:
-        image: influxdb
+        image: influxdb:latest
         restart: always
         volumes:
           - ./data/influxdb:/var/lib/influxdb
         networks:
           - influxdb
     kapacitor:
-        image: kapacitor
+        image: kapacitor:latest
         depends_on: [influxdb]
         restart: always
         environment:
@@ -55,7 +55,7 @@ services:
         networks:
           - influxdb
     chronograf:
-        image: chronograf
+        image: chronograf:latest
         depends_on: [influxdb,kapacitor]
         restart: always
         volumes:
@@ -70,7 +70,7 @@ services:
           - chronograf
           - --influxdb-url=http://influxdb:8086
     telegraf:
-      image: telegraf
+      image: telegraf:latest
       hostname: telegraf
       depends_on: [influxdb,nginx]
       restart: always
